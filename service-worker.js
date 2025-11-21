@@ -1,5 +1,5 @@
 // **UPDATED VERSION NUMBER**
-const CACHE_NAME = "pwa-cache-v3"; 
+const CACHE_NAME = "pwa-cache-v2"; 
 
 const STATIC_ASSETS = [
     // The root path needs to be absolute for GitHub Pages (e.g., /PWA-midterm/)
