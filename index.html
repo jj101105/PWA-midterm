@@ -1,398 +1,719 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Notes - PWA</title>
-    <link rel="manifest" href="manifest.json" />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITE Confessions Hub</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <!-- === CSS STYLING SECTION === -->
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .container {
-        max-width: 600px;
-        width: 100%;
-        margin-top: 40px;
-      }
-
-      h1 {
-        color: white;
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 2.5rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      .card {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        margin-bottom: 20px;
-      }
-
-      .input-group {
-        margin-bottom: 20px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 8px;
-        color: #333;
-        font-weight: 600;
-        font-size: 1.1rem;
-      }
-
-      input[type="text"],
-      textarea {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-family: inherit;
-        transition: border-color 0.3s;
-      }
-
-      input[type="text"]:focus,
-      textarea:focus {
-        outline: none;
-        border-color: #667eea;
-      }
-
-      textarea {
-        resize: vertical;
-        min-height: 120px;
-      }
-
-      .button-group {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      button {
-        flex: 1;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-
-      .btn-save {
-        background: #667eea;
-        color: white;
-      }
-
-      .btn-save:hover {
-        background: #5568d3;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-      }
-
-      .btn-clear {
-        background: #f44336;
-        color: white;
-      }
-
-      .btn-clear:hover {
-        background: #da190b;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
-      }
-
-      .message {
-        margin-top: 15px;
-        padding: 12px;
-        border-radius: 8px;
-        text-align: center;
-        font-weight: 600;
-        display: none;
-      }
-
-      .message.success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
-
-      .message.error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-      }
-
-      .message.show {
-        display: block;
-        animation: slideIn 0.3s ease-out;
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
+        :root {
+            scroll-behavior: smooth;
+            --primary-color: #00FFFF; /* Vibrant Cyan */
+            --secondary-color: #FF00FF; /* Electric Magenta for Glitch */
+            --danger-color: #FF6347; /* Tomato Red */
+            --dark-background: #080a0f; /* Even darker base */
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-background); 
+            color: #c9d1d9; 
+            position: relative; 
         }
-      }
-
-      .stats {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 2px solid #f0f0f0;
-      }
-
-      .stat-item {
-        text-align: center;
-      }
-
-      .stat-value {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #667eea;
-      }
-
-      .stat-label {
-        font-size: 0.85rem;
-        color: #666;
-        margin-top: 5px;
-      }
-
-      .note-list {
-        margin-top: 20px;
-      }
-
-      .note-item {
-        background: #f9f9f9;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        border-left: 4px solid #667eea;
-      }
-
-      .note-title {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 5px;
-      }
-
-      .note-content {
-        color: #666;
-        font-size: 0.95rem;
-      }
-
-      .note-date {
-        font-size: 0.8rem;
-        color: #999;
-        margin-top: 8px;
-      }
-
-      @media (max-width: 600px) {
-        h1 {
-          font-size: 1.8rem;
+        .section-padding {
+            padding: 6rem 0;
         }
 
-        .button-group {
-          flex-direction: column;
+        /* --- Custom Blob Animation (Continuous Background) --- */
+        #animated-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; 
+            pointer-events: none;
+            z-index: 0; /* Ensures it stays behind all content */
+            overflow: hidden;
+            background-color: var(--dark-background); 
         }
 
-        button {
-          width: 100%;
+        .animated-blob {
+            position: absolute;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.05; /* Slightly increased opacity for a more noticeable glow */
+            filter: blur(180px); /* Heavy blur for diffuse light */
+            /* Slower, more fluid animation */
+            animation: slow-drift 35s infinite alternate ease-in-out; /* Slower drift */
         }
-      }
+        /* Adjusted sizes and positions for a broader, smoother effect */
+        .animated-blob:nth-child(1) { width: 800px; height: 800px; top: 10%; left: 5%; animation-delay: 0s; }
+        .animated-blob:nth-child(2) { width: 950px; height: 950px; top: 50%; right: 5%; animation-delay: 12s; }
+        .animated-blob:nth-child(3) { width: 700px; height: 700px; bottom: 5%; left: 40%; animation-delay: 24s; }
+
+        @keyframes slow-drift {
+            0% { transform: scale(1) translate(0, 0); }
+            33% { transform: scale(1.05) translate(150px, -70px); }
+            66% { transform: scale(0.95) translate(-100px, 120px); }
+            100% { transform: scale(1) translate(50px, -50px); }
+        }
+        
+        /* --- Button Animation: Glowing Pulse --- */
+        .animated-button {
+            transition: all 0.3s ease-in-out;
+            animation: pulse-glow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.2);
+            }
+            50% {
+                /* Subtle scale up */
+                transform: scale(1.02);
+                /* Intensify the glow using the primary color */
+                box-shadow: 0 0 15px var(--primary-color), 0 0 30px rgba(0, 255, 255, 0.4);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.2);
+            }
+        }
+        /* --- End Button Animation --- */
+
+        /* --- Gen Z: Glitch/Holographic Title Effect --- */
+        .holographic-title {
+            color: #fff;
+            text-shadow: 
+                0 0 7px var(--primary-color),
+                0 0 10px var(--primary-color),
+                0 0 21px var(--primary-color);
+            animation: neon-pulse 1.5s ease-in-out infinite alternate;
+        }
+
+        /* Glitch text container needs position relative */
+        .glitch-text {
+            position: relative;
+        }
+
+        /* Create two overlaid pseudo-elements for the color shift/glitch */
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text); /* Use the text content */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Red/Magenta shift */
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--secondary-color);
+            /* Clipping creates the 'glitch' lines */
+            clip: rect(44px, 450px, 56px, 0); 
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        /* Cyan/Blue shift */
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--primary-color);
+            clip: rect(85px, 450px, 140px, 0);
+            animation: glitch-anim-2 2s infinite linear alternate;
+        }
+
+        /* Glitch Animation Keyframes */
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(32px, 9999px, 46px, 0); }
+            10% { clip: rect(101px, 9999px, 116px, 0); }
+            20% { clip: rect(12px, 9999px, 28px, 0); }
+            30% { clip: rect(72px, 9999px, 86px, 0); }
+            40% { clip: rect(90px, 9999px, 105px, 0); }
+            50% { clip: rect(44px, 9999px, 56px, 0); }
+            60% { clip: rect(18px, 9999px, 30px, 0); }
+            70% { clip: rect(58px, 9999px, 70px, 0); }
+            80% { clip: rect(130px, 9999px, 144px, 0); }
+            90% { clip: rect(8px, 9999px, 22px, 0); }
+            100% { clip: rect(62px, 9999px, 78px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(85px, 9999px, 140px, 0); }
+            15% { clip: rect(20px, 9999px, 35px, 0); }
+            30% { clip: rect(110px, 9999px, 125px, 0); }
+            45% { clip: rect(5px, 9999px, 20px, 0); }
+            60% { clip: rect(135px, 9999px, 150px, 0); }
+            75% { clip: rect(40px, 9999px, 55px, 0); }
+            90% { clip: rect(95px, 9999px, 110px, 0); }
+            100% { clip: rect(65px, 9999px, 80px, 0); }
+        }
+        /* --- End Glitch Effect --- */
+
+        /* Ensure all content sections are positioned relative and have z-index > 0 */
+        main section, footer {
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Apply background transparency and blur to see the animation, but keep content readable */
+        .section-background {
+            /* ~90% opacity of the standard dark color with blur */
+            background-color: #0d1117E6; 
+            backdrop-filter: blur(8px); 
+        }
+        
+        /* Confession tag styling */
+        .confession-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; 
+            font-size: 0.875rem; 
+            font-weight: 500;
+            background-color: #1f2937;
+            color: var(--primary-color);
+            border: 1px solid #1f2937;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Scroll Reveal */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .reveal-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Gen Z: Thread Style Card with Hover Effect --- */
+        .thread-card {
+            background-color: #161b22; /* Slightly lighter than body for contrast */
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+            border: 1px solid #30363d;
+            
+            /* Added for the cool hover effect */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transform-style: preserve-3d;
+        }
+        .thread-card:hover {
+            /* Subtle 3D tilt and lift */
+            transform: translateY(-5px) rotateX(1deg) rotateY(-1deg) scale(1.01); 
+            /* Added glowing shadow on hover */
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3), 0 0 10px rgba(0, 255, 255, 0.1);
+        }
+
+        .thread-image {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #30363d;
+        }
+        .file-upload-label {
+            display: block;
+            background-color: #1f2937;
+            color: #c9d1d9;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px dashed #374151;
+            text-align: center;
+        }
+        .file-upload-label:hover {
+            background-color: #374151;
+        }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Student Notes</h1>
+</head>
+<body>
 
-      <div class="card">
-        <div class="input-group">
-          <label for="noteTitle">Note Title</label>
-          <input type="text" id="noteTitle" placeholder="Enter note title..." />
+    <!-- === HTML STRUCTURE SECTION: Header & Navigation === -->
+    <header class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-md shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            
+            <!-- Logo with modern SVG Chip Icon -->
+            <a href="#hero" class="flex items-center">
+                <!-- SVG Icon for ITE (Chip/Processor) -->
+                <svg class="h-8 w-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25m-7.25 0V7.25M9 7h6v5h-6V7zm6 0V5.75m-6 0V5.75M9 17h6M12 5v2m0 5v5m0 0V5.75M9 7h6v5h-6V7z"/>
+                </svg>
+                <span class="ml-2 text-xl font-bold text-cyan-400 hidden sm:block">Confessions Hub</span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#vibe" class="text-gray-300 hover:text-cyan-400 transition duration-300 rounded-lg p-2">Our Vibe</a>
+                <a href="#confessions" class="text-gray-300 hover:text-cyan-400 transition duration-300 rounded-lg p-2">Hot Confessions</a>
+                <a href="#submit" class="text-gray-300 hover:text-cyan-400 transition duration-300 rounded-lg p-2">Group Chat Confession</a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-300 hover:text-cyan-400 focus:outline-none p-2 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
         </div>
 
-        <div class="input-group">
-          <label for="noteContent">Note Content</label>
-          <textarea
-            id="noteContent"
-            placeholder="Write your note here..."
-          ></textarea>
+        <!-- Mobile Menu Content -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <nav class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#vibe" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Our Vibe</a>
+                <a href="#confessions" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Hot Confessions</a>
+                <a href="#submit" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Group Chat Confession</a>
+            </nav>
         </div>
+    </header>
 
-        <div class="button-group">
-          <button class="btn-save" onclick="saveNote()">💾 Save Note</button>
-          <button class="btn-clear" onclick="clearNote()">🗑️ Clear</button>
-        </div>
-
-        <div id="message" class="message"></div>
-
-        <div class="stats">
-          <div class="stat-item">
-            <div class="stat-value" id="noteCount">0</div>
-            <div class="stat-label">Total Notes</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value" id="charCount">0</div>
-            <div class="stat-label">Characters</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-value" id="wordCount">0</div>
-            <div class="stat-label">Words</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 style="margin-bottom: 15px; color: #333">📚 Saved Notes</h2>
-        <div id="noteList" class="note-list"></div>
-      </div>
+    <!-- === ANIMATED BACKGROUND CONTAINER (Covers all content) === -->
+    <div id="animated-background">
+        <div class="animated-blob"></div>
+        <div class="animated-blob"></div>
+        <div class="animated-blob"></div>
     </div>
 
+    <main>
+        
+        <!-- Hero Section -->
+        <section id="hero" class="section-padding min-h-[90vh] flex items-center bg-gray-900/80 section-background">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <p class="text-xl sm:text-2xl text-cyan-400 mb-4 reveal-element">Welcome to the inner circle, anon.</p>
+                <!-- ADDED holographic-title and glitch-text classes for the cool effect -->
+                <h1 class="holographic-title glitch-text text-6xl sm:text-8xl font-extrabold text-white mb-4 reveal-element" data-text="ITE Confessions">
+                    ITE Confessions
+                </h1>
+                <h2 class="text-3xl sm:text-5xl font-medium text-gray-400 mb-8 reveal-element">
+                    Where <span id="typing-text" class="text-yellow-400 font-bold"></span> go viral.
+                </h2>
+                <!-- ADDED animated-button CLASS HERE -->
+                <a href="#confessions" class="inline-block px-8 py-3 text-lg font-semibold rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition duration-500 shadow-xl shadow-cyan-500/50 reveal-element animated-button">
+                    Dive into the Drama
+                </a>
+            </div>
+        </section>
+
+        <!-- Vibe Section (Find Class/Crush Filters) -->
+        <section id="vibe" class="section-padding section-background">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal-element">
+                <h2 class="text-4xl font-bold text-cyan-400 mb-6 text-center">Find Your Vibe or Your CR</h2>
+                <p class="text-xl text-gray-300 mb-10 text-center">Select a tag below to filter confessions or posts for fun connections!</p>
+                <div class="flex flex-wrap justify-center gap-3 p-6 bg-gray-900 rounded-xl shadow-2xl">
+                    <!-- Filters that trigger JS filtering (not implemented yet, just visual tags) -->
+                    <button class="confession-tag hover:bg-cyan-900/50">#FindCR <span class="text-red-400 ml-1">❤️</span></button>
+                    <button class="confession-tag hover:bg-cyan-900/50">#FindClass <span class="text-green-400 ml-1">📚</span></button>
+                    <button class="confession-tag hover:bg-cyan-900/50">#Rant</button>
+                    <button class="confession-tag hover:bg-cyan-900/50">#ProjectHelp</button>
+                    <button class="confession-tag hover:bg-cyan-900/50">#ExamTips</button>
+                    <button class="confession-tag hover:bg-cyan-900/50">#Funny</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Confessions Section (Dynamic Feed - Now Static Mockup) -->
+        <section id="confessions" class="section-padding section-background">
+            <div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-cyan-400 mb-12 text-center reveal-element">🔥 Hot Confessions Thread</h2>
+                
+                <!-- Confessions Container (Hardcoded Static Mockup) -->
+                <div id="confessions-container">
+                    
+                    <!-- Confession 1: Image, Funny (Now has hover effect) -->
+                    <div class="thread-card reveal-element visible">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center">
+                                <img src="https://placehold.co/40x40/00FFFF/0d1117?text=Anon" alt="Anon Profile" class="w-10 h-10 rounded-full bg-cyan-500 mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">ITE Confessor</p>
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <span class="confession-tag mr-2">😂 Funny</span> 
+                                        <span>21 Nov 19:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 leading-relaxed mt-4 whitespace-pre-wrap">When you finally debug that one line of code that was ruining your project for three days straight. The feeling is unmatched! 😂 Almost as good as finding free food in the canteen. #ITEfun #ProjectSolved</p>
+
+                        <img src="488658564_693823973158695_6362021316899433295_n.jpg" alt="Confession Image" class="thread-image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/c9d1d9?text=Image+Load+Error';">
+
+                        <div class="flex justify-around mt-4 pt-3 border-t border-gray-700 text-gray-400 text-sm">
+                            <button class="flex items-center hover:text-cyan-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.222 13.956 7.518 12 10 12h4c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h4zm-3.529-6.388l-.754 1.306L7 12l-1.283 2.194-.754 1.306C3.998 13.585 3 12.825 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9h-4c-2.482 0-4.778-1.956-6.005-5.289z"></path></svg>
+                                32 Comments
+                            </button>
+                            <button class="flex items-center hover:text-red-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                98 Likes
+                            </button>
+                            <button class="flex items-center hover:text-yellow-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-1a4 4 0 014-4h4m0 0l4-4m-4 4l4 4m0 0l4 4m-4-4l4-4m-4 4v7m0-7l4-4m-4 4l-4 4m0-4h-4"></path></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Confession 2: Text Only, Crush (Now has hover effect) -->
+                    <div class="thread-card reveal-element">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center">
+                                <img src="https://placehold.co/40x40/00FFFF/0d1117?text=Anon" alt="Anon Profile" class="w-10 h-10 rounded-full bg-cyan-500 mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">ITE Confessor</p>
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <span class="confession-tag mr-2">❤️ Find CR / Crush</span> 
+                                        <span>21 Nov 18:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 leading-relaxed mt-4 whitespace-pre-wrap">To the person always wearing the red hoodie in the main library on Tuesdays, 2 PM. You make studying bearable. I wish I had the courage to say hi! Anyone know who they are? 👀</p>
+
+                        <div class="flex justify-around mt-4 pt-3 border-t border-gray-700 text-gray-400 text-sm">
+                            <button class="flex items-center hover:text-cyan-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.222 13.956 7.518 12 10 12h4c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h4zm-3.529-6.388l-.754 1.306L7 12l-1.283 2.194-.754 1.306C3.998 13.585 3 12.825 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9h-4c-2.482 0-4.778-1.956-6.005-5.289z"></path></svg>
+                                19 Comments
+                            </button>
+                            <button class="flex items-center hover:text-red-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                65 Likes
+                            </button>
+                            <button class="flex items-center hover:text-yellow-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-1a4 4 0 014-4h4m0 0l4-4m-4 4l4 4m0 0l4 4m-4-4l4-4m-4 4v7m0-7l4-4m-4 4l-4 4m0-4h-4"></path></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confession 3: Text Only, Rant (Now has hover effect) -->
+                    <div class="thread-card reveal-element">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center">
+                                <img src="https://placehold.co/40x40/00FFFF/0d1117?text=Anon" alt="Anon Profile" class="w-10 h-10 rounded-full bg-cyan-500 mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">ITE Confessor</p>
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <span class="confession-tag mr-2">Rant</span> 
+                                        <span>21 Nov 17:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 leading-relaxed mt-4 whitespace-pre-wrap">Why do professors wait until the last minute to change the project requirements? I just pulled an all-nighter for nothing! My coffee machine is officially my best friend. 😭 #Burnout</p>
+
+                        <div class="flex justify-around mt-4 pt-3 border-t border-gray-700 text-gray-400 text-sm">
+                            <button class="flex items-center hover:text-cyan-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.222 13.956 7.518 12 10 12h4c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h4zm-3.529-6.388l-.754 1.306L7 12l-1.283 2.194-.754 1.306C3.998 13.585 3 12.825 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9h-4c-2.482 0-4.778-1.956-6.005-5.289z"></path></svg>
+                                7 Comments
+                            </button>
+                            <button class="flex items-center hover:text-red-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                22 Likes
+                            </button>
+                            <button class="flex items-center hover:text-yellow-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-1a4 4 0 014-4h4m0 0l4-4m-4 4l4 4m0 0l4 4m-4-4l4-4m-4 4v7m0-7l4-4m-4 4l-4 4m0-4h-4"></path></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confession 4: Image, Advice (Now has hover effect) -->
+                    <div class="thread-card reveal-element">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center">
+                                <img src="https://placehold.co/40x40/00FFFF/0d1117?text=Anon" alt="Anon Profile" class="w-10 h-10 rounded-full bg-cyan-500 mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">ITE Confessor</p>
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <span class="confession-tag mr-2">💡 Advice</span> 
+                                        <span>21 Nov 16:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 leading-relaxed mt-4 whitespace-pre-wrap">Midterm exams next week! Does anyone have any last-minute study tips for the 'Advanced Data Structures' module? Send help! I feel like I'm drowning in algorithms. 🙏</p>
+
+                        <img src="https://placehold.co/600x400/3B82F6/ffffff?text=ITE+Placeholder+Image" alt="Confession Image" class="thread-image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1f2937/c9d1d9?text=Image+Load+Error';">
+
+                        <div class="flex justify-around mt-4 pt-3 border-t border-gray-700 text-gray-400 text-sm">
+                            <button class="flex items-center hover:text-cyan-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.222 13.956 7.518 12 10 12h4c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h4zm-3.529-6.388l-.754 1.306L7 12l-1.283 2.194-.754 1.306C3.998 13.585 3 12.825 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9h-4c-2.482 0-4.778-1.956-6.005-5.289z"></path></svg>
+                                14 Comments
+                            </button>
+                            <button class="flex items-center hover:text-red-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                40 Likes
+                            </button>
+                            <button class="flex items-center hover:text-yellow-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-1a4 4 0 014-4h4m0 0l4-4m-4 4l4 4m0 0l4 4m-4-4l4-4m-4 4v7m0-7l4-4m-4 4l-4 4m0-4h-4"></path></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confession 5: Text Only, Class (Now has hover effect) -->
+                    <div class="thread-card reveal-element">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center">
+                                <img src="https://placehold.co/40x40/00FFFF/0d1117?text=Anon" alt="Anon Profile" class="w-10 h-10 rounded-full bg-cyan-500 mr-3">
+                                <div>
+                                    <p class="font-semibold text-white">ITE Confessor</p>
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <span class="confession-tag mr-2">📚 Find Class Partner</span> 
+                                        <span>21 Nov 15:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-300 leading-relaxed mt-4 whitespace-pre-wrap">Looking for a serious group partner for the 'Web Development' final project. I'm strong in backend (Node.js). Need someone good with frontend design (React/Angular). Must be reliable! DM for details. #FindClass</p>
+
+                        <div class="flex justify-around mt-4 pt-3 border-t border-gray-700 text-gray-400 text-sm">
+                            <button class="flex items-center hover:text-cyan-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.693C5.222 13.956 7.518 12 10 12h4c4.97 0 9-3.582 9-8s-4.03-8-9-8-9 3.582-9 8h4zm-3.529-6.388l-.754 1.306L7 12l-1.283 2.194-.754 1.306C3.998 13.585 3 12.825 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9h-4c-2.482 0-4.778-1.956-6.005-5.289z"></path></svg>
+                                2 Comments
+                            </button>
+                            <button class="flex items-center hover:text-red-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                15 Likes
+                            </button>
+                            <button class="flex items-center hover:text-yellow-400 transition duration-150">
+                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-1a4 4 0 014-4h4m0 0l4-4m-4 4l4 4m0 0l4 4m-4-4l4-4m-4 4v7m0-7l4-4m-4 4l-4 4m0-4h-4"></path></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Submit Section (Confession Form) -->
+        <section id="submit" class="section-padding section-background">
+            <div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 reveal-element">
+                <h2 class="text-4xl font-bold text-cyan-400 mb-6 text-center">Group Chat Confession</h2>
+                <p class="text-xl text-gray-300 mb-8 text-center">
+                    Share your thoughts and optional image, anonymously.
+                </p>
+
+                <form id="confession-form" class="bg-gray-900 p-8 rounded-xl shadow-2xl space-y-6">
+                    <div>
+                        <label for="confession-type" class="block text-lg font-medium text-gray-300 mb-2">Post Type</label>
+                        <select id="confession-type" name="type" required class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-cyan-500 focus:ring focus:ring-cyan-500/50 transition duration-300">
+                            <option value="Rant">Rant / General</option>
+                            <option value="Crush">Find CR / Secret Crush ❤️</option>
+                            <option value="Class">Find Class Partner 📚</option>
+                            <option value="Funny">Funny Moment</option>
+                            <option value="Advice">Need Advice</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="confession-content" class="block text-lg font-medium text-gray-300 mb-2">Your Confession (Max 500 characters)</label>
+                        <textarea id="confession-content" name="content" rows="4" maxlength="500" required placeholder="Type your deepest secret here... No identifying information!"
+                            class="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:border-cyan-500 focus:ring focus:ring-cyan-500/50 transition duration-300 resize-none"></textarea>
+                        <p class="text-sm text-gray-500 text-right"><span id="char-count">500</span> characters remaining</p>
+                    </div>
+
+                    <!-- Image Upload Simulation -->
+                    <div>
+                        <label for="image-upload" class="block text-lg font-medium text-gray-300 mb-2">Upload Image (Optional)</label>
+                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                        <label for="image-upload" id="upload-label" class="file-upload-label">
+                            Click to Select Image
+                        </label>
+                        <p id="image-upload-status" class="text-sm text-yellow-300 mt-2">
+                           Image files are not processed in this static demo. A placeholder will be shown if selected.
+                        </p>
+                    </div>
+                    
+                    <!-- ADDED animated-button CLASS HERE -->
+                    <button type="submit" class="w-full px-5 py-3 text-xl font-semibold rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition duration-300 shadow-lg shadow-cyan-500/50 animated-button" id="submit-button">
+                        Share Post
+                    </button>
+                    <!-- User message is now used for form success/error messages -->
+                    <div id="submit-message" class="hidden text-center p-3 rounded-lg font-medium"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/90 backdrop-blur-sm py-6 border-t border-gray-700 relative z-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 ITE Confessions Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- === JAVASCRIPT LOGIC SECTION (Static UI/FX Only) === -->
     <script>
-      // Initialize notes array
-      let notes = JSON.parse(localStorage.getItem("notes")) || [];
+        let hasImage = false; // Flag to track if user selected an image
+        const PLACEHOLDER_IMAGE = "https://placehold.co/600x400/3B82F6/ffffff?text=ITE+Placeholder+Image";
+        
+        // === Background Animation Height Adjuster ===
+        function updateBackgroundHeight() {
+            const body = document.body;
+            const bgElement = document.getElementById('animated-background');
+            // Set the background height to the total scrollable height of the document
+            bgElement.style.height = `${body.scrollHeight}px`;
+        }
+        
+        // === Form Submission Handler (Now just shows a message) ===
+        document.getElementById('confession-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitButton = document.getElementById('submit-button');
+            
+            submitButton.disabled = true;
 
-      // Save note function
-      function saveNote() {
-        const title = document.getElementById("noteTitle").value.trim();
-        const content = document.getElementById("noteContent").value.trim();
+            // Simulate success message
+            alertUserMessage("Confession successfully submitted (Simulated).", 'success');
+                
+            // Reset Form and State
+            form.reset();
+            hasImage = false;
+            document.getElementById('upload-label').textContent = 'Click to Select Image';
+            document.getElementById('image-upload-status').textContent = 'Image files are not processed in this static demo. A placeholder will be shown if selected.';
+            document.getElementById('char-count').textContent = '500'; 
+                
+            setTimeout(() => {
+                submitButton.disabled = false;
+            }, 1000); // Re-enable button after 1 second
+        });
 
-        if (!title || !content) {
-          showMessage("Please fill in both title and content!", "error");
-          return;
+        function alertUserMessage(message, type) {
+            const msgElement = document.getElementById('submit-message');
+            msgElement.textContent = message;
+            msgElement.classList.remove('hidden', 'bg-red-900/50', 'bg-green-900/50', 'bg-cyan-900/50');
+            
+            let bgColor = 'bg-cyan-900/50';
+            if (type === 'success') bgColor = 'bg-green-900/50';
+            if (type === 'error') bgColor = 'bg-red-900/50';
+
+            msgElement.classList.add(bgColor, 'text-white');
+            
+            setTimeout(() => msgElement.classList.add('hidden'), 5000);
+        }
+        
+        // === Image Upload Status Handler (Simulation) ===
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const uploadLabel = document.getElementById('upload-label');
+            const statusText = document.getElementById('image-upload-status');
+            
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                uploadLabel.textContent = `Image Selected: ${fileName}`;
+                statusText.textContent = 'Image file selected. A placeholder image will be used in the post.';
+                hasImage = true;
+            } else {
+                uploadLabel.textContent = 'Click to Select Image';
+                statusText.textContent = 'Image files are not processed in this static demo. A placeholder will be shown if selected.';
+                hasImage = false;
+            }
+        });
+
+        // === UI Enhancements (Typing and Scroll Reveal) ===
+
+        // Character Count Update
+        document.getElementById('confession-content').addEventListener('input', function() {
+            const charCount = document.getElementById('char-count');
+            const remaining = this.maxLength - this.value.length;
+            charCount.textContent = remaining;
+            charCount.classList.toggle('text-red-400', remaining < 50);
+            charCount.classList.toggle('text-gray-500', remaining >= 50);
+        });
+        
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Typing Animation Effect
+        const words = ["Student Secrets", "Course Complaints", "Canteen Reviews", "True Feelings"];
+        const typingElement = document.getElementById('typing-text');
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingSpeed = 150;
+        const deletingSpeed = 80;
+        const pauseTime = 1500;
+
+        function type() {
+            const currentWord = words[wordIndex];
+            
+            if (typingElement) {
+                if (isDeleting) {
+                    typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let speed = isDeleting ? deletingSpeed : typingSpeed;
+
+                if (!isDeleting && charIndex === currentWord.length) {
+                    speed = pauseTime;
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    wordIndex = (wordIndex + 1) % words.length;
+                }
+
+                setTimeout(type, speed);
+            }
         }
 
-        const note = {
-          id: Date.now(),
-          title: title,
-          content: content,
-          date: new Date().toLocaleString(),
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal-element');
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // Start Initialization and Effects
+        window.onload = function() {
+            type();
+            
+            // Set initial background height and listen for window resize/content changes
+            updateBackgroundHeight(); 
+            window.addEventListener('resize', updateBackgroundHeight);
+            
+            // Re-check background height on a slight delay after content might have settled
+            setTimeout(updateBackgroundHeight, 1000); 
         };
 
-        notes.unshift(note);
-        localStorage.setItem("notes", JSON.stringify(notes));
-
-        showMessage("Note saved successfully! ✓", "success");
-        clearNote();
-        displayNotes();
-        updateStats();
-      }
-
-      // Clear note inputs
-      function clearNote() {
-        document.getElementById("noteTitle").value = "";
-        document.getElementById("noteContent").value = "";
-        updateStats();
-      }
-
-      // Delete a note
-      function deleteNote(id) {
-        if (confirm("Are you sure you want to delete this note?")) {
-          notes = notes.filter((note) => note.id !== id);
-          localStorage.setItem("notes", JSON.stringify(notes));
-          displayNotes();
-          updateStats();
-          showMessage("Note deleted!", "success");
-        }
-      }
-
-      // Display all notes
-      function displayNotes() {
-        const noteList = document.getElementById("noteList");
-
-        if (notes.length === 0) {
-          noteList.innerHTML =
-            '<p style="text-align: center; color: #999;">No notes yet. Start writing!</p>';
-          return;
-        }
-
-        noteList.innerHTML = notes
-          .map(
-            (note) => `
-        <div class="note-item">
-          <div class="note-title">${escapeHtml(note.title)}</div>
-          <div class="note-content">${escapeHtml(note.content)}</div>
-          <div class="note-date">📅 ${note.date}</div>
-          <button onclick="deleteNote(${
-            note.id
-          })" style="margin-top: 10px; padding: 5px 15px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">Delete</button>
-        </div>
-      `
-          )
-          .join("");
-      }
-
-      // Show message
-      function showMessage(text, type) {
-        const messageEl = document.getElementById("message");
-        messageEl.textContent = text;
-        messageEl.className = `message ${type} show`;
-
-        setTimeout(() => {
-          messageEl.classList.remove("show");
-        }, 3000);
-      }
-
-      // Update statistics
-      function updateStats() {
-        const content = document.getElementById("noteContent").value;
-        const charCount = content.length;
-        const wordCount = content.trim()
-          ? content.trim().split(/\s+/).length
-          : 0;
-
-        document.getElementById("noteCount").textContent = notes.length;
-        document.getElementById("charCount").textContent = charCount;
-        document.getElementById("wordCount").textContent = wordCount;
-      }
-
-      // Escape HTML to prevent XSS
-      function escapeHtml(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-      }
-
-      // Update stats on typing
-      document
-        .getElementById("noteContent")
-        .addEventListener("input", updateStats);
-
-      // Load on page load
-      window.onload = () => {
-        displayNotes();
-        updateStats();
-      };
-
-      // Register service worker
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("service-worker.js")
-          .then(() => console.log("SW registered"))
-          .catch((err) => console.log("SW error:", err));
-      }
     </script>
-  </body>
+</body>
 </html>
+
