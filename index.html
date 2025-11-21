@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Demo</title>
+
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    body { font-family: Arial; padding: 20px; text-align: center; }
+    .card {
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 300px;
+      background: #e5ffe5;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>PWA Demo – Student Notes</h1>
+  <div class="card">
+    <p>Write your note:</p>
+    <textarea id="note" rows="4" cols="30"></textarea><br><br>
+    <button onclick="saveNote()">Save Note</button>
+    <p id="saved"></p>
+  </div>
+
+  <script>
+    function saveNote() {
+      const text = document.getElementById("note").value;
+      localStorage.setItem("userNote", text);
+      document.getElementById("saved").innerText = "Saved!";
+    }
+
+    window.onload = () => {
+      document.getElementById("note").value = localStorage.getItem("userNote") || "";
+    };
+
+    // Register service worker
+    if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("SW registered"))
+    .catch(err => console.log("SW error:", err));
+}
+
+  </script>
+</body>
+</html>
