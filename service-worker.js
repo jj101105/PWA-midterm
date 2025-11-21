@@ -1,10 +1,10 @@
 const CACHE_NAME = "pwa-cache-v2"; 
 
 const STATIC_ASSETS = [
-    
-    "index.html",
-    "manifest.json",
-    "icon1.png"
+    "/PWA-midterm/",
+    "/PWA-midterm/index.html",
+    "/PWA-midterm/manifest.json",
+    "/PWA-midterm/icon1.png"
 ];
 
 // Install
